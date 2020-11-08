@@ -76,6 +76,7 @@ add one of this block code, for each switch you want to create and change the 3 
 No rules for the idx value, but I suggest to use the same number set on the hardware during the installation of the system
 
 **SHUTTER**
+
 Under cover add this code
 ```
 - platform: mqtt
