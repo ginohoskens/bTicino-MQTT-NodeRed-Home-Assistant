@@ -15,9 +15,9 @@ Open config.yaml and under light add this code:
   name: 'ingresso'
   command_topic: 'lights/cmd'
   state_topic: 'bticino/out'
-  command_on_template: '{"idx": 15, "nvalue": "1" }'
-  command_off_template: '{"idx": 15, "nvalue": "0" }'
-  state_template: '{% if value_json.idx == 15 %} {% if value_json.nvalue == 1 %} on {% else %} off {% endif %} {% endif %}'
+  command_on_template: '{"idx": 15, "buslevel": 0, "nvalue": "1" }'
+  command_off_template: '{"idx": 15, "buslevel": 0, "nvalue": "0" }'
+  state_template: '{% if value_json.idx == 15 %} {% if value_json.buslevel == 0 %} {% if value_json.nvalue == 1 %} on {% else %} off {% endif %} {% endif %} {% endif %}'
   optimistic: false
 ```
 This will create a light in HA
@@ -49,8 +49,8 @@ Under switch add this code:
   icon: mdi:power-plug
   command_topic: 'switch/cmd'
   state_topic: 'bticino/out'
-  payload_on: '{"idx": 81, "nvalue": "1" }'
-  payload_off: '{"idx": 81, "nvalue": "0" }'
+  payload_on: '{"idx": 81, "buslevel": 0, "nvalue": "1" }'
+  payload_off: '{"idx": 81, "buslevel": 0, "nvalue": "0" }'
   state_on: 'on'
   state_off: 'off'
   value_template: '{% if value_json.idx == 81 %} {% if value_json.nvalue == 1 %} on {% else %} off {% endif %} {% endif %}'
@@ -74,6 +74,25 @@ add one of this block code, for each switch you want to create and change the 3 
 >**value_template:**
 
 No rules for the idx value, but I suggest to use the same number set on the hardware during the installation of the system
+
+**SHUTTER**
+Under cover add this code
+```
+- platform: mqtt
+  name: "description"
+  command_topic: 'shutter/cmd'
+  state_topic: 'bticino/out'
+  optimistic: false
+  retain: true
+  payload_open: '{"idx": 39, "buslevel": 63, "nvalue": "1" }'
+  payload_close: '{"idx": 39, "buslevel": 63, "nvalue": "2" }'
+  payload_stop: '{"idx": 39, "buslevel": 63, "nvalue": "0" }'
+  state_closed: 'closed'
+  state_open: 'open'
+  state_closing: 'closing'
+  tilt_opened_value: 100
+  value_template: '{% if value_json.idx == 39 and value_json.buslevel == 63 %} {% if value_json.nvalue == 1 %} open {% if value_json.nvalue == 2 %} closing {% else %} closed {% endif %} {% endif %} {% endif %}'
+  ```
 
 **SENSOR**
 
